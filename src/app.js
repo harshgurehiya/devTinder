@@ -1,30 +1,39 @@
 const express = require("express");
 
 const app = express();
+const { adminAuth, userAuth } = require("./Middlewares/auth");
 
-app.get("/user/:userID/:name", (req, res, next) => {
-  console.log("Handling Response..");
-  console.log(req.params);
-  //res.send("Response!!");
-  next();
+//Handling admin authentication - GET, POST,....
+
+app.use("/admin", adminAuth);
+
+app.get("/user/login", (req, res) => {
+  res.send("User logged in successfully!!");
 });
 
-app.use(
-  "/user",
-  (req, res, next) => {
-    console.log("Handling route handler 1");
-    //res.send("Response 1");
-    next();
-  },
-  (req, res, next) => {
-    console.log("Handling route handler 2");
-    res.send("Response 2");
-  },
-  (req, res, next) => {
-    console.log("Handling route handler 3");
-    res.send("Response 3");
-  }
-);
+app.get("/user/data", userAuth, (req, res) => {
+  res.send("User data sent");
+});
+
+app.get("/admin/getAllData", (req, res) => {
+  res.send("All data sent");
+});
+
+app.get("/admin/deleteAllData", (req, res) => {
+  res.send("Deleted all the data");
+});
+
+// app.get("/admin/getUserData", (req, res) => {
+//   try {
+//     throw new Error("xnbsauhjsfjm");
+//   } catch (error) {
+//     res.status(500).send("Some Error!!");
+//   }
+// });
+
+app.use("/", (err, req, res, next) => {
+  res.status(500).send("Something went wrong. Contact support team.");
+});
 
 app.listen(7777, () => {
   console.log("Server successfully started...");
